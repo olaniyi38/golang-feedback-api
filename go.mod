@@ -1,6 +1,6 @@
 module github.com/olaniyi38/golang-feedback-app
 
-go 1.21.0
+go 1.21.2
 
 require (
 	github.com/gin-contrib/cors v1.4.0
