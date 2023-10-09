@@ -5,8 +5,8 @@ import (
 	"time"
 
 	"github.com/gin-gonic/gin"
-	"product-feedback.com/api/controllers"
-	"product-feedback.com/api/utils"
+	"github.com/olaniyi38/golang-feedback-app/api/controllers"
+	"github.com/olaniyi38/golang-feedback-app/api/utils"
 )
 
 func VerifyJWT(handlerFunc func(c *gin.Context)) func(c *gin.Context) {

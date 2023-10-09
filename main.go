@@ -7,9 +7,9 @@ import (
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
-	"product-feedback.com/api/controllers"
-	"product-feedback.com/api/db"
-	"product-feedback.com/api/middleware"
+	"github.com/olaniyi38/golang-feedback-app/api/controllers"
+	"github.com/olaniyi38/golang-feedback-app/api/db"
+	"github.com/olaniyi38/golang-feedback-app/api/middleware"
 )
 
 func main() {

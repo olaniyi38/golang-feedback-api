@@ -12,8 +12,8 @@ import (
 	"github.com/golang-jwt/jwt/v5"
 	"go.mongodb.org/mongo-driver/bson"
 	"golang.org/x/crypto/bcrypt"
-	"product-feedback.com/api/models"
-	"product-feedback.com/api/utils"
+	"github.com/olaniyi38/golang-feedback-app/api/models"
+	"github.com/olaniyi38/golang-feedback-app/api/utils"
 )
 
 func (con controller) SignUp(c *gin.Context) {

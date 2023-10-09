@@ -1,4 +1,4 @@
-module product-feedback.com
+module github.com/olaniyi38/golang-feedback-app
 
 go 1.21.0
 

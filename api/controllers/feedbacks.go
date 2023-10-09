@@ -11,7 +11,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"product-feedback.com/api/models"
+	"github.com/olaniyi38/golang-feedback-app/api/models"
 )
 
 
