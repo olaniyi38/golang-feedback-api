@@ -91,8 +91,10 @@ func (con controller) SignUp(c *gin.Context) {
 		HttpOnly: true,
 	}
 
+
 	http.SetCookie(c.Writer, cookie)
-	c.JSON(200, token)
+	
+	c.JSON(200, newUser)
 }
 
 func (con controller) SignIn(c *gin.Context) {

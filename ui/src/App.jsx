@@ -73,11 +73,13 @@ const App = () => {
 	const dispatch = useDispatch();
 
 	async function init() {
-		try {
-			await dispatch(fetchUser()).unwrap();
-		} finally {
-			dispatch(fetchFeedbacks()).unwrap();
-		}
+
+		await dispatch(fetchUser()).unwrap()
+			.then(async () => {
+				await dispatch(fetchFeedbacks()).unwrap()
+			}).catch((err) => {
+				
+			})
 	}
 
 	useEffect(() => {

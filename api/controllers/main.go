@@ -18,9 +18,9 @@ func New(db *mongo.Database) controller {
 
 func RespondWithErr(c *gin.Context, err error, status int) {
 	Error := struct {
-		Message string `json:"message"`
+		Error string `json:"error"`
 	}{
-		Message: err.Error(),
+		Error: err.Error(),
 	}
 	c.JSON(status, Error)
 	fmt.Println(err)

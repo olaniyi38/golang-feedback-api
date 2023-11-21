@@ -1,8 +1,0 @@
-[build]
-  command = "./build.sh"
-  functions = "functions"
-  publish = "public"
-
-[build.environment]
-  GO_IMPORT_PATH = "github.com/olaniyi38/golang-feedback-app"
-  GO111MODULE = "on"

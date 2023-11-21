@@ -9,19 +9,16 @@ import (
 	_ "golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
+	"github.com/olaniyi38/golang-feedback-app/api/models"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
-	"github.com/olaniyi38/golang-feedback-app/api/models"
 )
-
-
 
 func (con controller) GetFeedbacks(c *gin.Context) {
 	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
 	feedbacks := []models.FeedBack{}
 	collection := con.DB.Collection("feedbacks")
 	defer cancel()
-	
 
 	results, err := collection.Find(ctx, bson.M{})
 	if err != nil {
@@ -39,6 +36,8 @@ func (con controller) GetFeedbacks(c *gin.Context) {
 
 		feedbacks = append(feedbacks, feedback)
 	}
+
+	time.Sleep(time.Second * 5)
 
 	c.JSON(200, feedbacks)
 }

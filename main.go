@@ -24,7 +24,7 @@ func main() {
 		}
 	}()
 
-	corsConfig.AllowOrigins = []string{"http://localhost:5173"}
+	corsConfig.AllowOrigins = []string{"http://localhost:5173","http://localhost:3000"}
 	corsConfig.AllowCredentials = true
 	corsConfig.AddAllowHeaders("Cookie")
 
@@ -32,9 +32,9 @@ func main() {
 
 	router.Use(static.Serve("/", static.LocalFile("./ui/dist/", true)))
 
-	router.NoRoute(func(c *gin.Context) {
-		c.File("./ui/dist/index.html")
-	})
+	// router.NoRoute(func(c *gin.Context) {
+	// 	c.File("./ui/dist/index.html")
+	// })
 
 	router.GET("/", func(ctx *gin.Context) {
 		router.StaticFile("/ui/dist/index.html", "./ui/dist/index.html")
@@ -58,7 +58,7 @@ func main() {
 
 	router.DELETE("/delete-feedback/:id", middleware.VerifyJWT(con.DeleteFeedback))
 
-	err := router.Run(":3000")
+	err := router.Run(":4000")
 
 	if err != nil {
 		log.Fatal(err)

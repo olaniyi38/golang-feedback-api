@@ -1,7 +1,7 @@
 import { FaBars } from "react-icons/fa";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { selectFeedbacks } from "../features/feedbacks/feedbackSelector";
+import { selectFeedbacks, selectStatus } from "../features/feedbacks/feedbackSelector";
 import Button from "./Button";
 import { logOutUser } from "../features/user/userSlice";
 import { useNavigate } from "react-router-dom";
@@ -11,6 +11,7 @@ const roadmap = ["planned", "in-progress", "live"];
 
 const Nav = ({ updateFilter, currentFilter }) => {
 	const feedbacks = useSelector(selectFeedbacks);
+	const feedbacksFetchStatus = useSelector(selectStatus)
 	const dispatch = useDispatch();
 	const navigate = useNavigate();
 
@@ -40,9 +41,8 @@ const Nav = ({ updateFilter, currentFilter }) => {
 						<button
 							key={c}
 							onClick={() => updateFilter(c)}
-							className={`${
-								isActive && "bg-blue-600 text-white hover:bg-blue-700"
-							} bg-blue-50 hover:bg-blue-200 transition-colors font-semibold px-4 py-1 text-sm rounded`}
+							className={`${isActive && "bg-blue-600 text-white hover:bg-blue-700"
+								} bg-blue-50 hover:bg-blue-200 transition-colors font-semibold px-4 py-1 text-sm rounded`}
 						>
 							{c}
 						</button>

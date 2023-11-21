@@ -2,17 +2,19 @@ import Button from "./Button";
 import { FaPlus } from "react-icons/fa";
 import { HiOutlineLightBulb, HiOutlinePlus } from "react-icons/hi";
 import FeedBack from "./FeedBack";
+import FeedbacksSkeleton from './FeedbacksSkeleton'
 import { Link } from "react-router-dom";
 import { useState } from "react";
 import FeedbacksList from "./FeedbacksList";
 import { useSelector } from "react-redux";
-import Loading from "./Loading";
 import { selectUser } from "../features/user/userSelector";
+import { selectStatus } from "../features/feedbacks/feedbackSelector";
+
 
 const FeedBacks = ({ data }) => {
 	const feedBacks = data;
 	const [sortBy, setSortBy] = useState("mostUpvotes");
-	const user = useSelector(selectUser);
+	const feedbacksFetchStatus = useSelector(selectStatus)
 
 	const sorted = feedBacks.sort((a, b) => {
 		switch (sortBy) {
@@ -47,8 +49,9 @@ const FeedBacks = ({ data }) => {
 					<select
 						name="sort"
 						id="#sort"
-						className="bg-blue-950 font-semibold outline-none"
+						className="bg-blue-950 font-semibold outline-none disabled:text-gray-400 transition-colors"
 						onChange={updateSort}
+						disabled={feedbacksFetchStatus === "pending" || feedbacksFetchStatus === "failed"}
 					>
 						<option value="mostUpvotes">Most upvotes</option>
 						<option value="leastUpvotes">Least upvotes</option>
@@ -57,14 +60,14 @@ const FeedBacks = ({ data }) => {
 					</select>
 				</div>
 				<Link to="/create-feedback">
-					<Button>
+					<Button disabled={feedbacksFetchStatus === "pending" || feedbacksFetchStatus === "failed"}>
 						<FaPlus className="w-3 h-3" />
 						<span>Add feedback</span>
 					</Button>
 				</Link>
 			</header>
 
-			{data.length > 0 || user ? <FeedbacksList data={sorted} /> : <Loading full={false} />}
+			{feedbacksFetchStatus === "pending" ? <FeedbacksSkeleton /> : <FeedbacksList data={sorted} />}
 		</section>
 	);
 };

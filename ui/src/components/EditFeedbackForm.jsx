@@ -58,8 +58,6 @@ const EditFeedbackForm = ({ id }) => {
 				navigate("/");
 			});
 	}
-	
-	
 
 	return (
 		<div className="space-y-8">
@@ -118,7 +116,10 @@ const EditFeedbackForm = ({ id }) => {
 					</>
 				) : (
 					<>
-						<Button variant="red" onClick={() => setDeleteActive(true)}> Delete</Button>
+						<Button variant="red" onClick={() => setDeleteActive(true)}>
+							{" "}
+							Delete
+						</Button>
 						<div className="flex items-center gap-x-4 ">
 							<Button onClick={() => navigate(-1)}>Cancel</Button>
 							<Button variant="blue" onClick={handleSubmit(onSubmit)}>
