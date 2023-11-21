@@ -5,7 +5,7 @@ import (
 	"log"
 
 	"github.com/gin-contrib/cors"
-	"github.com/gin-gonic/contrib/static"
+	_"github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/olaniyi38/golang-feedback-app/api/controllers"
 	"github.com/olaniyi38/golang-feedback-app/api/db"
@@ -30,21 +30,21 @@ func main() {
 
 	router.Use(cors.New(corsConfig))
 
-	router.Use(static.Serve("/", static.LocalFile("./ui/dist/", true)))
+	// router.Use(static.Serve("/", static.LocalFile("./ui/dist/", true)))
 
-	// router.NoRoute(func(c *gin.Context) {
-	// 	c.File("./ui/dist/index.html")
+	// // router.NoRoute(func(c *gin.Context) {
+	// // 	c.File("./ui/dist/index.html")
+	// // })
+
+	// router.GET("/", func(ctx *gin.Context) {
+	// 	router.StaticFile("/ui/dist/index.html", "./ui/dist/index.html")
 	// })
-
-	router.GET("/", func(ctx *gin.Context) {
-		router.StaticFile("/ui/dist/index.html", "./ui/dist/index.html")
-	})
 
 	router.GET("/feedbacks", middleware.VerifyJWT(con.GetFeedbacks))
 
 	router.GET("/fetch-user", con.VerifySignedToken)
 
-	router.GET("/auth/logout", middleware.VerifyJWT(con.LogOut))
+	router.POST("/auth/logout", middleware.VerifyJWT(con.LogOut))
 
 	router.POST("/create-feedback", middleware.VerifyJWT(con.PostFeedback))
 
