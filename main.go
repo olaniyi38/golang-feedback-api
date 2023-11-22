@@ -24,7 +24,7 @@ func main() {
 		}
 	}()
 
-	corsConfig.AllowOrigins = []string{"http://localhost:5173","http://localhost:3000"}
+	corsConfig.AllowOrigins = []string{"http://localhost:5173","http://localhost:3000","https://feedback-app-hazel.vercel.app"}
 	corsConfig.AllowCredentials = true
 	corsConfig.AddAllowHeaders("Cookie")
 
