@@ -10,10 +10,10 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
-	"go.mongodb.org/mongo-driver/bson"
-	"golang.org/x/crypto/bcrypt"
 	"github.com/olaniyi38/golang-feedback-app/api/models"
 	"github.com/olaniyi38/golang-feedback-app/api/utils"
+	"go.mongodb.org/mongo-driver/bson"
+	"golang.org/x/crypto/bcrypt"
 )
 
 func (con controller) SignUp(c *gin.Context) {
@@ -91,9 +91,8 @@ func (con controller) SignUp(c *gin.Context) {
 		HttpOnly: true,
 	}
 
-
 	http.SetCookie(c.Writer, cookie)
-	
+
 	c.JSON(200, newUser)
 }
 
@@ -160,9 +159,9 @@ func (con controller) SignIn(c *gin.Context) {
 		Value:    token,
 		MaxAge:   4000000,
 		Path:     "/",
-		Domain:   "localhost",
-		Secure:   false,
+		Secure:   true,
 		HttpOnly: true,
+		SameSite: http.SameSiteNoneMode,
 	}
 
 	http.SetCookie(c.Writer, cookie)
@@ -222,9 +221,9 @@ func (con controller) LogOut(c *gin.Context) {
 		Value:    "",
 		MaxAge:   -1,
 		Path:     "/",
-		Domain:   "localhost",
-		Secure:   false,
+		Secure:   true,
 		HttpOnly: true,
+		SameSite: http.SameSiteNoneMode,
 	}
 
 	http.SetCookie(c.Writer, cookie)
