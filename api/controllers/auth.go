@@ -86,8 +86,9 @@ func (con controller) SignUp(c *gin.Context) {
 		Value:    token,
 		MaxAge:   4000000,
 		Path:     "/",
-		Secure:   false,
+		Secure:   true,
 		HttpOnly: true,
+		SameSite: http.SameSiteNoneMode,
 	}
 
 	http.SetCookie(c.Writer, cookie)
