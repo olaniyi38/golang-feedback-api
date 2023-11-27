@@ -17,7 +17,7 @@ import (
 )
 
 func (con controller) SignUp(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	con.DB.Collection("feedbacks")
 	defer cancel()
 	usersCollection := con.DB.Collection("users")
@@ -96,7 +96,7 @@ func (con controller) SignUp(c *gin.Context) {
 }
 
 func (con controller) SignIn(c *gin.Context) {
-	ctx, cancel := context.WithTimeout(context.Background(), 10*time.Second)
+	ctx, cancel := context.WithTimeout(context.Background(), 20*time.Second)
 	con.DB.Collection("feedbacks")
 	defer cancel()
 	usersCollection := con.DB.Collection("users")
