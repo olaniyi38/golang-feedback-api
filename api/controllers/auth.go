@@ -86,7 +86,6 @@ func (con controller) SignUp(c *gin.Context) {
 		Value:    token,
 		MaxAge:   4000000,
 		Path:     "/",
-		Domain:   "localhost",
 		Secure:   false,
 		HttpOnly: true,
 	}
