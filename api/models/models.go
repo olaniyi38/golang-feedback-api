@@ -39,4 +39,5 @@ type FeedBack struct {
 	Status      string             `json:"status" bson:"status"`
 	Description string             `json:"description" bson:"description"`
 	Comments    []Comment          `json:"comments"  bson:"comments"`
+	By          string             `json:"by" bson:"by"`
 }

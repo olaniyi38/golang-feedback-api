@@ -2,14 +2,18 @@ package controllers
 
 import (
 	"context"
+	"errors"
+	"fmt"
 	"net/http"
 	"time"
 
+	"github.com/golang-jwt/jwt/v5"
 	_ "github.com/golang-jwt/jwt/v5"
 	_ "golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
 	"github.com/olaniyi38/golang-feedback-app/api/models"
+	"github.com/olaniyi38/golang-feedback-app/api/utils"
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 )
@@ -75,6 +79,28 @@ func (con controller) EditFeedback(c *gin.Context) {
 		return
 	}
 
+	authToken, err := c.Cookie("auth")
+
+	if err != nil {
+		RespondWithErr(c, err, http.StatusUnauthorized)
+		return
+	}
+
+	token, err := utils.VerifyJwt(authToken)
+
+	if err != nil {
+		RespondWithErr(c, err, http.StatusUnauthorized)
+		return
+	}
+
+	claims := token.Claims.(jwt.MapClaims)
+	fmt.Println(claims["username"])
+
+	if claims["username"] != newFeedback.By {
+		RespondWithErr(c, errors.New("You are unauthorized to edit this feedback"), http.StatusUnauthorized)
+		return
+	}
+
 	result, err := collection.ReplaceOne(ctx, bson.D{{Key: "_id", Value: newFeedback.Id}}, newFeedback)
 
 	if err != nil {
@@ -92,8 +118,40 @@ func (con controller) DeleteFeedback(c *gin.Context) {
 	defer cancel()
 
 	objectId, err := primitive.ObjectIDFromHex(feedbackId)
+
 	if err != nil {
 		RespondWithErr(c, err, http.StatusBadRequest)
+		return
+	}
+
+	var feedback models.FeedBack
+
+	err = collection.FindOne(ctx, bson.D{{Key: "_id", Value: objectId}}).Decode(&feedback)
+
+	if err != nil {
+		RespondWithErr(c, errors.New("feedback not found"), http.StatusBadRequest)
+		return
+	}
+
+	authToken, err := c.Cookie("auth")
+
+	if err != nil {
+		RespondWithErr(c, err, http.StatusUnauthorized)
+		return
+	}
+
+	token, err := utils.VerifyJwt(authToken)
+
+	if err != nil {
+		RespondWithErr(c, errors.New("Invalid Jwt"), http.StatusUnauthorized)
+		return
+	}
+
+	claims := token.Claims.(jwt.MapClaims)
+	fmt.Println(claims["username"])
+
+	if claims["username"] != feedback.By {
+		RespondWithErr(c, errors.New("You are unauthorized to edit this feedback"), http.StatusUnauthorized)
 		return
 	}
 

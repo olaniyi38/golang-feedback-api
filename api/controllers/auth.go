@@ -177,8 +177,6 @@ func (con controller) VerifySignedToken(c *gin.Context) {
 
 	var User models.User
 	authToken, err := c.Cookie("auth")
-	fmt.Print("token", authToken)
-	fmt.Println(c.Request.Header)
 	if err != nil {
 		RespondWithErr(c, err, http.StatusUnauthorized)
 		return
