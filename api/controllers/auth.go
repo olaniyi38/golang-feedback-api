@@ -198,6 +198,18 @@ func (con controller) VerifySignedToken(c *gin.Context) {
 	}
 
 	if time.Now().Compare(exp.Time) == 1 {
+		cookie := &http.Cookie{
+			Name:     "auth",
+			Value:    "",
+			MaxAge:   -1,
+			Path:     "/",
+			Secure:   true,
+			HttpOnly: true,
+			SameSite: http.SameSiteNoneMode,
+		}
+
+		http.SetCookie(c.Writer, cookie)
+		
 		RespondWithErr(c, err, http.StatusUnauthorized)
 		return
 	}
