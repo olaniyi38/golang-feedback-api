@@ -3,13 +3,13 @@ package controllers
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"strings"
 	"time"
 
 	"github.com/gin-gonic/gin"
 	"github.com/golang-jwt/jwt/v5"
+
 	"github.com/olaniyi38/golang-feedback-app/api/models"
 	"github.com/olaniyi38/golang-feedback-app/api/utils"
 	"go.mongodb.org/mongo-driver/bson"
@@ -119,8 +119,7 @@ func (con controller) SignIn(c *gin.Context) {
 
 	result := authCollection.FindOne(ctx, bson.D{{Key: "username", Value: userCred.Username}})
 	if result.Err() != nil {
-		RespondWithErr(c, errors.New("User Not found"), http.StatusNotFound)
-		fmt.Println(result.Err())
+		RespondWithErr(c, errors.New("user not found"), http.StatusNotFound)
 		return
 	}
 	err := result.Decode(&authCred)
@@ -209,7 +208,7 @@ func (con controller) VerifySignedToken(c *gin.Context) {
 		}
 
 		http.SetCookie(c.Writer, cookie)
-		
+
 		RespondWithErr(c, err, http.StatusUnauthorized)
 		return
 	}

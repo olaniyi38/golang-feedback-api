@@ -3,12 +3,16 @@ package utils
 import (
 	"errors"
 	"fmt"
-	"github.com/golang-jwt/jwt/v5"
+	"log"
 	"os"
+	"strings"
+
+	"github.com/gin-gonic/gin"
+	"github.com/golang-jwt/jwt/v5"
 )
 
 type Claims struct {
-	Exp int64 `json:"exp"`
+	Exp      int64  `json:"exp"`
 	Username string `json:"username"`
 }
 
@@ -40,4 +44,27 @@ func VerifyJwt(token string) (*jwt.Token, error) {
 	}
 
 	return t, nil
+}
+
+func VerifyUserPermission(c *gin.Context, feedbackBy string) error {
+	authToken, err := c.Cookie("auth")
+
+	if err != nil {
+		return errors.New("auth token not found")
+	}
+
+	token, err := VerifyJwt(authToken)
+
+	if err != nil {
+		return errors.New("invalid jwt token")
+	}
+
+	claims := token.Claims.(jwt.MapClaims)
+
+	if !strings.EqualFold(claims["username"].(string), feedbackBy) {
+		log.Println(claims["username"], feedbackBy)
+		return errors.New("you are unauthorized to edit this feedback")
+	}
+
+	return nil
 }

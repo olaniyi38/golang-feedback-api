@@ -5,26 +5,29 @@ import (
 	"log"
 
 	"github.com/gin-contrib/cors"
-	_"github.com/gin-gonic/contrib/static"
+	_ "github.com/gin-gonic/contrib/static"
 	"github.com/gin-gonic/gin"
 	"github.com/olaniyi38/golang-feedback-app/api/controllers"
 	"github.com/olaniyi38/golang-feedback-app/api/db"
 	"github.com/olaniyi38/golang-feedback-app/api/middleware"
 )
 
+
+
 func main() {
-	client := db.Init()
-	con := controllers.New(client.Database("product-feedbacks"))
+	dbClient := db.Init()
+	con := controllers.New(dbClient.Database("product-feedbacks"))
 	router := gin.Default()
 	corsConfig := cors.DefaultConfig()
 
 	defer func() {
-		if err := client.Disconnect(context.TODO()); err != nil {
+		if err := dbClient.Disconnect(context.TODO()); err != nil {
 			panic(err)
 		}
 	}()
 
-	corsConfig.AllowOrigins = []string{"http://localhost:5173","http://localhost:3000","https://feedback-app-hazel.vercel.app"}
+	
+	corsConfig.AllowOrigins = []string{"http://localhost:5173", "http://localhost:3000", "https://feedback-app-hazel.vercel.app"}
 	corsConfig.AllowCredentials = true
 	corsConfig.AddAllowHeaders("Cookie")
 

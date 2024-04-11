@@ -3,12 +3,10 @@ package controllers
 import (
 	"context"
 	"errors"
-	"fmt"
 	"net/http"
 	"time"
 
 	"github.com/golang-jwt/jwt/v5"
-	_ "github.com/golang-jwt/jwt/v5"
 	_ "golang.org/x/crypto/bcrypt"
 
 	"github.com/gin-gonic/gin"
@@ -41,8 +39,6 @@ func (con controller) GetFeedbacks(c *gin.Context) {
 		feedbacks = append(feedbacks, feedback)
 	}
 
-	time.Sleep(time.Second * 5)
-
 	c.JSON(200, feedbacks)
 }
 
@@ -63,7 +59,7 @@ func (con controller) PostFeedback(c *gin.Context) {
 		RespondWithErr(c, err, http.StatusBadRequest)
 	}
 
-	c.JSON(200, result.InsertedID)
+	c.JSON(200, result)
 }
 
 func (con controller) EditFeedback(c *gin.Context) {
@@ -79,25 +75,10 @@ func (con controller) EditFeedback(c *gin.Context) {
 		return
 	}
 
-	authToken, err := c.Cookie("auth")
+	err = utils.VerifyUserPermission(c, newFeedback.By)
 
 	if err != nil {
 		RespondWithErr(c, err, http.StatusUnauthorized)
-		return
-	}
-
-	token, err := utils.VerifyJwt(authToken)
-
-	if err != nil {
-		RespondWithErr(c, err, http.StatusUnauthorized)
-		return
-	}
-
-	claims := token.Claims.(jwt.MapClaims)
-	fmt.Println(claims["username"])
-
-	if claims["username"] != newFeedback.By {
-		RespondWithErr(c, errors.New("You are unauthorized to edit this feedback"), http.StatusUnauthorized)
 		return
 	}
 
@@ -108,7 +89,7 @@ func (con controller) EditFeedback(c *gin.Context) {
 		return
 	}
 
-	c.JSON(200, result.MatchedCount)
+	c.JSON(200, result)
 }
 
 func (con controller) DeleteFeedback(c *gin.Context) {
@@ -133,25 +114,10 @@ func (con controller) DeleteFeedback(c *gin.Context) {
 		return
 	}
 
-	authToken, err := c.Cookie("auth")
+	err = utils.VerifyUserPermission(c, feedback.By)
 
 	if err != nil {
 		RespondWithErr(c, err, http.StatusUnauthorized)
-		return
-	}
-
-	token, err := utils.VerifyJwt(authToken)
-
-	if err != nil {
-		RespondWithErr(c, errors.New("Invalid Jwt"), http.StatusUnauthorized)
-		return
-	}
-
-	claims := token.Claims.(jwt.MapClaims)
-	fmt.Println(claims["username"])
-
-	if claims["username"] != feedback.By {
-		RespondWithErr(c, errors.New("You are unauthorized to edit this feedback"), http.StatusUnauthorized)
 		return
 	}
 
@@ -191,7 +157,7 @@ func (con controller) LikeFeedback(c *gin.Context) {
 	token, err := utils.VerifyJwt(authToken)
 
 	if err != nil {
-		RespondWithErr(c, errors.New("Invalid Jwt"), http.StatusUnauthorized)
+		RespondWithErr(c, errors.New("invalid jwt"), http.StatusUnauthorized)
 		return
 	}
 
@@ -203,12 +169,15 @@ func (con controller) LikeFeedback(c *gin.Context) {
 		RespondWithErr(c, err, http.StatusBadRequest)
 		return
 	}
-	
-	fmt.Println("body", body)
-	
+
 	//find feedback to update
 	feedbackId, err := primitive.ObjectIDFromHex(body.Id)
-	
+
+	if err != nil {
+		RespondWithErr(c, errors.New("invalid feedback_id"), http.StatusBadRequest)
+		return
+	}
+
 	err = feedbacksCollection.FindOne(ctx, bson.D{{Key: "_id", Value: feedbackId}}).Decode(&feedback)
 
 	if err != nil {
@@ -222,7 +191,6 @@ func (con controller) LikeFeedback(c *gin.Context) {
 	userUpdate := bson.D{{Key: "$set", Value: bson.D{{Key: "likes", Value: body.Likes}}}}
 
 	result, err := usersCollection.UpdateOne(ctx, userFilter, userUpdate)
-	fmt.Println("user", result.ModifiedCount, result.MatchedCount)
 
 	if err != nil {
 		RespondWithErr(c, err, http.StatusInternalServerError)
@@ -231,12 +199,10 @@ func (con controller) LikeFeedback(c *gin.Context) {
 
 	//update feedback upvotes
 
-
 	feedbackFilter := bson.D{{Key: "_id", Value: feedbackId}}
 	feedbackUpdate := bson.D{{Key: "$set", Value: bson.D{{Key: "upvotes", Value: body.Upvotes}}}}
 
 	result, err = feedbacksCollection.UpdateOne(ctx, feedbackFilter, feedbackUpdate)
-	fmt.Println("feedack", result.UpsertedCount, result.MatchedCount)
 
 	if err != nil {
 		delete(body.Likes, feedback.Id.String())

@@ -10,6 +10,7 @@ import (
 	"os"
 )
 
+
 func Init() *mongo.Client {
 	err := godotenv.Load()
 	if err != nil {
